@@ -6,6 +6,7 @@ Segmento: Venda de hardwares e periféricos.
 Objetivo da atividade:  
 Modelar o banco de dados com base nos requisitos de negócio fornecidos e criar o DER (Diagrama Entidade-Relacionamento).
 Resumo do problema: [[problema.pdf]] 
+26/02/2026
 
 ---
 # PSQL

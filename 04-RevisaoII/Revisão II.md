@@ -1,6 +1,7 @@
 Aula de revisão ministrada pelo professor Itamar, com foco na utilização do pgAdmin e em uma revisão geral dos principais conceitos do PostgreSQL.
 
 **Banco de Dados: Universo**
+02/03/2026
 - - -
 ###### Criação do banco de dados.
 ```sql

@@ -1,4 +1,5 @@
 Revisão prática com PostgreSQL
+19/02/2026
 
 ---
 ## Shell (Psql)

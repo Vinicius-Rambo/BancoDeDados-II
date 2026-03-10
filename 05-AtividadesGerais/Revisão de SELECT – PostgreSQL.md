@@ -1,6 +1,7 @@
 Aula de revisão ministrada pelo professor Itamar, com foco na utilização do SELECT, usando o  **banco de dados: universo**.
 
 a base utilizada foi: [base.sql](base.sql)
+09/03/2026
 - - - 
 ## Consultas Básicas
 
