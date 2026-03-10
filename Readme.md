@@ -3,10 +3,10 @@
 ---
 ## Banco de Dados II
 
-Componente Curricular: Banco de Dados II  
-Semestre: 3º  
-Carga horária: 80h (67h relógio)
-Professor: Alcione Benacchio.
+**Componente Curricular:** Banco de Dados II  
+**Semestre**: 3º  
+**Carga horária**: 80h (67h relógio)
+**Professor**: Alcione Benacchio.
 
 ---
 ## Objetivo
@@ -43,7 +43,3 @@ Aprofundar o uso de SGBDs relacionais, focando em:
 
 [Conteúdo](https://docs.google.com/document/d/1OhMnvWHXKIe5ENwaXXcuKM96oEXiXvRjjrKhmHgKXwI/edit?tab=t.0)
 [Documentação Psql](https://www.postgresql.org/docs/17/index.html)
-
-## Próxima aula: 
-Aula de revisão aos conteúdos passados anteriormente e introdução ao **PgAdmin**
-[[Revisão]]
