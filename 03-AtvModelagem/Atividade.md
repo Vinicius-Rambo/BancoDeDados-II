@@ -141,3 +141,5 @@ Usando o pgAdmin, fiz a vizualização da minha database exportei a forma de rel
 
 ![Imagem do banco](banco.png)
 - - -
+## Próxima aula: 
+Revisão dos conceitos gerais de banco de dados com o professor substituto temporário Itamar:  [[Revisão II]]

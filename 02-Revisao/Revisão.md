@@ -108,3 +108,6 @@ ALTER TABLE IF EXISTS public.matricula
 ALTER TABLE IF EXISTS public.matricula
     ADD CHECK (ano < 2030);
 ```
+- - -
+## Próxima aula: 
+Aula de realização de atividades para fixação de conteúdo [[Atividade]]

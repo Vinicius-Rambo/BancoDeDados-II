@@ -79,3 +79,5 @@ FOREIGN KEY (id_galaxia)
 REFERENCES galaxias(id);
 ```
 
+## Próxima aula: 
+Atividades de revisão do SELECT ministrado pelo professor Itamar: [[Revisão de SELECT – PostgreSQL]] 
