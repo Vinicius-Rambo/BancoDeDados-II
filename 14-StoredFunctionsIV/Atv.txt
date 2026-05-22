@@ -1,0 +1,6 @@
+Criar uma função para parcelamento:
+- O pgto parcelado, deve ser entre 2 e 12x
+- Deve haver um acréscimo de X% por mês adicional (juro simples)
+- As parcelas devem ter datas iniciando 1 mês após a compra.
+- Cada parcela deve registrar se está paga ao não
+- Ao pagar todas as parcelas, o status da venda deve mudar par 1.
