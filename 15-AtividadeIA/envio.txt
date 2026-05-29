@@ -1,0 +1,319 @@
+CREATE TABLE configuracoes (
+    id SERIAL PRIMARY KEY,
+    chave VARCHAR(50) UNIQUE NOT NULL,
+    valor_percentual DECIMAL(5,2) NOT NULL
+);
+
+CREATE TABLE regras_parcelamento (
+    qtd_parcelas INT PRIMARY KEY,
+    percentual_acrescimo DECIMAL(5,2) NOT NULL
+);
+
+CREATE TABLE clientes (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(14) UNIQUE,
+    rg VARCHAR(20),
+    endereco_completo VARCHAR(255),
+    telefone VARCHAR(20)
+);
+
+CREATE TABLE vendedores (
+    codigo SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(14) UNIQUE NOT NULL,
+    endereco_completo VARCHAR(255),
+    telefone VARCHAR(20),
+    celular VARCHAR(20),
+    salario_base DECIMAL(10,2) NOT NULL
+);
+
+CREATE TABLE fornecedores (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cnpj VARCHAR(20) UNIQUE NOT NULL,
+    telefone VARCHAR(20)
+);
+
+CREATE TABLE produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    preco_venda DECIMAL(10,2) NOT NULL,
+    percentual_comissao DECIMAL(5,2) NOT NULL,
+    -- Campos de controle (adicionados para resolver a Consulta 8)
+    estoque_inicial INT NOT NULL DEFAULT 0,
+    total_comprado INT NOT NULL DEFAULT 0,
+    estoque_atual INT NOT NULL DEFAULT 0,
+    estoque_minimo INT NOT NULL DEFAULT 5,
+    qtd_ideal_recompra INT NOT NULL DEFAULT 10
+);
+
+CREATE TABLE fornecedor_produto (
+    fornecedor_id INT REFERENCES fornecedores(id),
+    produto_id INT REFERENCES produtos(id),
+    tempo_entrega_dias INT NOT NULL,
+    PRIMARY KEY (fornecedor_id, produto_id)
+);
+
+CREATE TABLE vendas (
+    id SERIAL PRIMARY KEY,
+    vendedor_id INT NOT NULL REFERENCES vendedores(codigo),
+    cliente_id INT REFERENCES clientes(id),
+    data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    total_venda DECIMAL(10,2) DEFAULT 0.00,
+    tipo_pagamento VARCHAR(20) CHECK (tipo_pagamento IN ('A_VISTA', 'A_PRAZO')),
+    status VARCHAR(20) DEFAULT 'EM_ABERTO'
+);
+
+CREATE TABLE itens_venda (
+    id SERIAL PRIMARY KEY,
+    venda_id INT NOT NULL REFERENCES vendas(id),
+    produto_id INT NOT NULL REFERENCES produtos(id),
+    quantidade INT NOT NULL,
+    preco_unitario DECIMAL(10,2) NOT NULL,
+    valor_comissao DECIMAL(10,2) DEFAULT 0.00
+);
+
+CREATE TABLE parcelas_venda (
+    id SERIAL PRIMARY KEY,
+    venda_id INT NOT NULL REFERENCES vendas(id),
+    numero_parcela INT NOT NULL,
+    data_vencimento DATE NOT NULL,
+    valor_parcela DECIMAL(10,2) NOT NULL,
+    data_pagamento DATE,
+    valor_pago DECIMAL(10,2)
+);
+
+
+--  SQL DML - Inserção de Dados (Vendedores, Produtos, Clientes e Vendas)
+
+-- Inserindo 5 Vendedores
+INSERT INTO vendedores (nome, cpf, endereco_completo, telefone, celular, salario_base) VALUES
+('Vendedor A', '001', 'End A', '111', '911', 1500.00),
+('Vendedor B', '002', 'End B', '222', '922', 1600.00),
+('Vendedor C', '003', 'End C', '333', '933', 1400.00),
+('Vendedor D', '004', 'End D', '444', '944', 1800.00),
+('Vendedor E', '005', 'End E', '555', '955', 2000.00);
+
+-- Inserindo 10 Clientes
+INSERT INTO clientes (nome, cpf, rg, endereco_completo, telefone) VALUES
+('Cliente 01', '101', 'RG1', 'End C1', '1001'),
+('Cliente 02', '102', 'RG2', 'End C2', '1002'),
+('Cliente 03', '103', 'RG3', 'End C3', '1003'),
+('Cliente 04', '104', 'RG4', 'End C4', '1004'),
+('Cliente 05', '105', 'RG5', 'End C5', '1005'),
+('Cliente 06', '106', 'RG6', 'End C6', '1006'),
+('Cliente 07', '107', 'RG7', 'End C7', '1007'),
+('Cliente 08', '108', 'RG8', 'End C8', '1008'),
+('Cliente 09', '109', 'RG9', 'End C9', '1009'),
+('Cliente 10', '110', 'RG10', 'End C10', '1010');
+
+-- Inserindo 20 Produtos (Com estoque inicial para permitir a auditoria)
+INSERT INTO produtos (nome, descricao, preco_venda, percentual_comissao, estoque_inicial, estoque_atual) VALUES
+('Prod 01', 'Desc 01', 10.00, 5.0, 50, 50), ('Prod 02', 'Desc 02', 20.00, 5.0, 50, 50),
+('Prod 03', 'Desc 03', 30.00, 5.0, 50, 50), ('Prod 04', 'Desc 04', 40.00, 6.0, 50, 50),
+('Prod 05', 'Desc 05', 50.00, 6.0, 50, 50), ('Prod 06', 'Desc 06', 60.00, 6.0, 50, 50),
+('Prod 07', 'Desc 07', 70.00, 7.0, 50, 50), ('Prod 08', 'Desc 08', 80.00, 7.0, 50, 50),
+('Prod 09', 'Desc 09', 90.00, 7.0, 50, 50), ('Prod 10', 'Desc 10', 100.00, 8.0, 50, 50),
+('Prod 11', 'Desc 11', 110.00, 8.0, 50, 50), ('Prod 12', 'Desc 12', 120.00, 8.0, 50, 50),
+('Prod 13', 'Desc 13', 130.00, 9.0, 50, 50), ('Prod 14', 'Desc 14', 140.00, 9.0, 50, 50),
+('Prod 15', 'Desc 15', 150.00, 9.0, 50, 50), ('Prod 16', 'Desc 16', 160.00, 10.0, 50, 50),
+('Prod 17', 'Desc 17', 170.00, 10.0, 50, 50), ('Prod 18', 'Desc 18', 180.00, 10.0, 50, 50),
+('Prod 19', 'Desc 19', 190.00, 12.0, 50, 50), ('Prod 20', 'Desc 20', 200.00, 12.0, 50, 50);
+
+-- Inserindo 40 Vendas (Distribuição de 4 vendas por cliente e balanceada entre os 5 vendedores)
+-- Usaremos uma data fixa em um mês para facilitar os testes da Consulta 3
+INSERT INTO vendas (vendedor_id, cliente_id, data_hora, tipo_pagamento, total_venda, status)
+SELECT 
+    ((g.i % 5) + 1) AS vendedor,   -- Distribui entre os 5 vendedores (8 vendas cada)
+    ((g.i % 10) + 1) AS cliente,   -- Distribui entre os 10 clientes (4 vendas cada)
+    '2023-10-15 14:00:00'::TIMESTAMP,
+    CASE WHEN g.i % 2 = 0 THEN 'A_VISTA' ELSE 'A_PRAZO' END,
+    0, 'FINALIZADA'
+FROM generate_series(0, 39) AS g(i);
+
+-- Inserindo 1 item para cada venda (Simulando uma baixa de estoque forçada para os testes)
+INSERT INTO itens_venda (venda_id, produto_id, quantidade, preco_unitario, valor_comissao)
+SELECT 
+    v.id, 
+    ((v.id % 20) + 1), -- Distribui itens entre os 20 produtos
+    2,                 -- Vende 2 unidades
+    p.preco_venda, 
+    (p.preco_venda * 2) * (p.percentual_comissao / 100)
+FROM vendas v
+JOIN produtos p ON ((v.id % 20) + 1) = p.id;
+
+-- Atualizando os totais das vendas e baixando estoque bruto via script (já que contornamos as functions no DML)
+UPDATE vendas v
+SET total_venda = (SELECT SUM(quantidade * preco_unitario) FROM itens_venda WHERE venda_id = v.id);
+
+UPDATE produtos p
+SET estoque_atual = estoque_inicial - (SELECT COALESCE(SUM(quantidade), 0) FROM itens_venda WHERE produto_id = p.id);
+
+-- 3. Maiores Vendedores do Mês
+SELECT 
+    v.nome AS vendedor, 
+    SUM(ven.total_venda) AS total_vendido
+FROM vendedores v
+JOIN vendas ven ON v.codigo = ven.vendedor_id
+WHERE EXTRACT(MONTH FROM ven.data_hora) = 10 
+  AND EXTRACT(YEAR FROM ven.data_hora) = 2023
+GROUP BY v.nome
+ORDER BY total_vendido DESC
+LIMIT 3;
+
+-- 4. Clientes que Mais Gastaram na História
+SELECT 
+    c.nome AS cliente, 
+    SUM(ven.total_venda) AS total_gasto
+FROM clientes c
+JOIN vendas ven ON c.id = ven.cliente_id
+GROUP BY c.id, c.nome
+ORDER BY total_gasto DESC
+LIMIT 3;
+
+-- 5. Salário + Comissão por Vendedor
+SELECT 
+    v.nome AS vendedor, 
+    v.salario_base,
+    COALESCE(SUM(iv.valor_comissao), 0) AS total_comissoes,
+    (v.salario_base + COALESCE(SUM(iv.valor_comissao), 0)) AS salario_final
+FROM vendedores v
+LEFT JOIN vendas ven ON v.codigo = ven.vendedor_id
+LEFT JOIN itens_venda iv ON ven.id = iv.venda_id
+GROUP BY v.codigo, v.nome, v.salario_base
+ORDER BY salario_final DESC;
+
+-- 6. Relatório de Reposição de Estoque
+SELECT 
+    id AS codigo_produto, 
+    nome AS produto, 
+    estoque_atual, 
+    estoque_minimo, 
+    qtd_ideal_recompra AS quantidade_comprar
+FROM produtos
+WHERE estoque_atual <= estoque_minimo
+ORDER BY estoque_atual ASC;
+
+-- 7. Resumo de Vendas em Dinheiro (À Vista) x A Prazo
+SELECT 
+    tipo_pagamento, 
+    SUM(total_venda) AS faturamento_total
+FROM vendas
+WHERE data_hora >= '2023-10-01 00:00:00' 
+  AND data_hora <= '2023-10-31 23:59:59'
+GROUP BY tipo_pagamento;
+
+--8. Auditoria de Estoque (Identificação de Perdas/Furtos)
+SELECT 
+    p.id AS codigo,
+    p.nome AS produto,
+    p.estoque_inicial,
+    p.total_comprado AS compras_realizadas,
+    COALESCE(SUM(iv.quantidade), 0) AS unidades_vendidas,
+    p.estoque_atual AS saldo_registrado,
+    (p.estoque_inicial + p.total_comprado - COALESCE(SUM(iv.quantidade), 0)) AS saldo_matematico_correto,
+    CASE 
+        WHEN p.estoque_atual = (p.estoque_inicial + p.total_comprado - COALESCE(SUM(iv.quantidade), 0)) 
+            THEN 'ESTOQUE OK'
+        WHEN p.estoque_atual < (p.estoque_inicial + p.total_comprado - COALESCE(SUM(iv.quantidade), 0)) 
+            THEN 'ALERTA: PRODUTO SUMIU'
+        ELSE 'ALERTA: SOBRA INEXPLICADA'
+    END AS status_auditoria
+FROM produtos p
+LEFT JOIN itens_venda iv ON p.id = iv.produto_id
+GROUP BY 
+    p.id, 
+    p.nome, 
+    p.estoque_inicial, 
+    p.total_comprado, 
+    p.estoque_atual
+ORDER BY p.id;
+
+
+-- 1. Cadastrando Clientes
+INSERT INTO clientes (nome, cpf, rg, endereco_completo, telefone) VALUES 
+('João Silva', '111.111.111-11', '1234567-8', 'Rua das Flores, 123, Centro', '(11) 98888-1111'),
+('Maria Oliveira', '222.222.222-22', '8765432-1', 'Av. Paulista, 1000, Bela Vista', '(11) 97777-2222');
+
+-- 2. Cadastrando Vendedores
+INSERT INTO vendedores (nome, cpf, endereco_completo, telefone, celular, salario_base) VALUES 
+('Carlos Souza', '333.333.333-33', 'Rua do Comércio, 50', '(11) 3333-0000', '(11) 96666-3333', 1500.00),
+('Ana Lima', '444.444.444-44', 'Rua das Árvores, 99', '(11) 3444-0000', '(11) 95555-4444', 1600.00);
+
+-- 3. Cadastrando Fornecedores
+INSERT INTO fornecedores (nome, cnpj, telefone) VALUES 
+('Nike Brasil', '11.111.111/0001-11', '(11) 4004-9999'),
+('Adidas Sul', '22.222.222/0001-22', '(11) 4004-8888');
+
+-- 4. Cadastrando Produtos 
+-- (Note o estoque atual baixo na Chuteira para testarmos o relatório de compras)
+INSERT INTO produtos (nome, descricao, preco_venda, percentual_comissao, estoque_atual, estoque_minimo, qtd_ideal_recompra) VALUES 
+('Bola de Futebol', 'Bola oficial tamanho 5', 150.00, 5.00, 20, 5, 30),
+('Chuteira de Campo', 'Chuteira com travas', 300.00, 10.00, 4, 5, 15),
+('Camisa de Time', 'Camisa oficial I', 250.00, 8.00, 10, 3, 20);
+
+-- 5. Relacionando Fornecedor x Produto (Tempo de entrega)
+INSERT INTO fornecedor_produto (fornecedor_id, produto_id, tempo_entrega_dias) VALUES 
+(1, 1, 7),  -- Bola demora 7 dias
+(1, 2, 10), -- Chuteira demora 10 dias
+(2, 3, 5);  -- Camisa demora 5 dias
+
+-- 6. Criando Vendas em Aberto (Ainda não finalizadas)
+-- Venda 1: Com cliente identificado (João) / Vendedor Carlos
+INSERT INTO vendas (vendedor_id, cliente_id) VALUES (1, 1);
+-- Itens da Venda 1: 2 Bolas e 1 Camisa
+INSERT INTO itens_venda (venda_id, produto_id, quantidade, preco_unitario) VALUES 
+(1, 1, 2, 150.00), 
+(1, 3, 1, 250.00);
+
+-- Venda 2: Cliente Nulo (Venda Rápida) / Vendedor Ana
+INSERT INTO vendas (vendedor_id, cliente_id) VALUES (2, NULL);
+-- Itens da Venda 2: 1 Chuteira
+INSERT INTO itens_venda (venda_id, produto_id, quantidade, preco_unitario) VALUES 
+(2, 2, 1, 300.00);
+
+-- Teste A: Finalizar Venda (À Vista e a Prazo)
+-- Finaliza Venda 1 em 3 parcelas
+SELECT finaliza_venda(1, 3);
+
+-- Finaliza Venda 2 em 1 parcela (À vista)
+SELECT finaliza_venda(2, 1);
+
+-- para conferir os testes acima:
+
+-- Verificar os totais atualizados e status (A Venda 1 deve ter 7% de juros: 550 + 7% = 588.50)
+SELECT id, total_venda, tipo_pagamento, status FROM vendas;
+
+-- Verificar a geração das 3 parcelas para a Venda 1
+SELECT * FROM parcelas_venda WHERE venda_id = 1;
+
+-- Verificar se a comissão foi calculada e se o estoque baixou
+SELECT * FROM itens_venda;
+SELECT id, nome, estoque_atual FROM produtos;
+
+--Teste B: Resumo da Venda (Incluindo Cliente Nulo)
+
+--Vamos testar a função que traz o recibo simplificado, validando como o sistema trata uma venda sem cliente amarrado.
+
+-- Testando resumo para venda com cliente (João Silva)
+SELECT * FROM obter_resumo_venda(1);
+
+-- Testando resumo para venda Rápida/Dinheiro (Cliente não identificado)
+SELECT * FROM obter_resumo_venda(2);
+
+-- Teste C: Relatório Gerencial de Compras
+
+-- Verificar o que o gerente precisa comprar hoje
+SELECT * FROM relatorio_necessidade_compras();
+
+--Teste D: Carga de Estoque
+-- Simula a chegada de 15 chuteiras (ID 2)
+SELECT carga_estoque(2, 15);
+
+-- Conferir se o estoque foi atualizado (O estoque era 3, deve ir para 18)
+SELECT id, nome, estoque_atual FROM produtos WHERE id = 2;
+
+-- Se rodar o relatório de novo, a chuteira não deve mais aparecer
+SELECT * FROM relatorio_necessidade_compras();

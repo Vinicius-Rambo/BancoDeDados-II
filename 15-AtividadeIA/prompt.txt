@@ -1,0 +1,27 @@
+Modele uma base de dados para gerenciar as vendas de uma loja e produtos esportivos, devendo atender os seguintes requisitos: 
+
+Deve ser com o banco de dados PostgreSQL, quando possivel utilize a StoreFunctions para realizar os procedimentos. 
+
+Exigencias:
+- Os produtos devem possuir um cadastro completo, e o um relatório para auxiliar ao gerente de quando e quanto deve comprar mais de um determinado produto.
+- Deve haver um processo de gerenciamento de fornecedores levando em consideração quanto tempo cada produto demora para chegar ao estoque, considerando a compra e o recebimento.
+- O cadastro dos clientes devem possuir Nome, CPF, Rg, Endereço Completo e Telefone.
+- O cadastro dos vendedores deve possuir codigo, nome, endereço, telefone, celular e CPF.
+
+As funcionalidades devem seguir as seguintes regras: 
+
+As vendas são realizadas por um vendedor, e deve ser possível descobrir o total da venda, data, hora e cliente que está comprando, essa verificação deve ser com uma StoreFunctions.
+
+Os vendedores recebem um salário, registrado de forma individual, e uma comissão em percentual, que varia de produto para produto.
+
+Poderão ser realizadas vendas à vista ou a prazo, quando a prazo, deve haver um registro de percentual e aumento no total da venda, de acordo com o total de parcelas, por exemplo: 2x – 5%, 3x – 7%, 4x 8%, etc.
+
+Vendas a prazo devem criar parcelas de pagamento, com sua data de vencimento e valor, atrasos em pagamentos geram multa por atraso, as multas por atraso devem estar em um local que possa ser alterado de acordo com a necessidade do cliente.
+
+Vendas em dinheiro podem não estar relacionadas a um Cliente, isso incluie que deve se haver um "cliente nulo" um cliente que pode ser usado em algumas compras para casos rapidos.
+
+Uma função para auxiliar na compra deve implementar a carga dos produtos no estoque.
+
+O sistema irá finalizar as vendas e baixar do estoque os produtos, sempre que for acionada a função finaliza_venda.
+
+A base de dados deve manter as formas normais.
